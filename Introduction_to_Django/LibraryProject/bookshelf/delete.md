@@ -1,5 +1,6 @@
 from bookshelf.models import Book
 
-# Example: delete a book by ID
+# Example: delete a book instance
 
-Book.objects.get(id=1).delete()
+book = Book.objects.get(id=1)
+book.delete
