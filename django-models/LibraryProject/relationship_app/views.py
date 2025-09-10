@@ -1,26 +1,19 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test
-from .models import UserProfile
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import permission_required
+from .models import Book
+from django.http import HttpResponse
 
-# Helper functions
-def is_admin(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+@permission_required("relationship_app.can_add_book")
+def add_book(request):
+    # placeholder logic (later could use forms)
+    return HttpResponse("You are allowed to add a book!")
 
-def is_librarian(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
+@permission_required("relationship_app.can_change_book")
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    return HttpResponse(f"You are allowed to edit the book: {book.title}")
 
-def is_member(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
-
-# Role-based views
-@user_passes_test(is_admin)
-def admin_view(request):
-    return render(request, "relationship_app/admin_view.html")
-
-@user_passes_test(is_librarian)
-def librarian_view(request):
-    return render(request, "relationship_app/librarian_view.html")
-
-@user_passes_test(is_member)
-def member_view(request):
-    return render(request, "relationship_app/member_view.html")
+@permission_required("relationship_app.can_delete_book")
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    return HttpResponse(f"You are allowed to delete the book: {book.title}")
