@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .models import Book  # Make sure Book is imported
+from .models import Book  
 
 def list_books(request):
     books = Book.objects.all()
     return render(request, "relationship_app/list_books.html", {"books": books})
-from django.views.generic import DetailView
-from .models import Library  # Important: this is what the checker is looking for
+from django.views.generic.detail import DetailView
+from .models import Library  
 
 class LibraryDetailView(DetailView):
     model = Library
