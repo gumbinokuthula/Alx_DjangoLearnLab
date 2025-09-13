@@ -1,9 +1,17 @@
+# LibraryProject/bookshelf/admin.py
 from django.contrib import admin
-from .models import Book
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser, Book
 
-class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'publication_year')  # Columns shown in list view
-    list_filter = ('publication_year', 'author')            # Filters in sidebar
-    search_fields = ('title', 'author')                     # Search box functionality
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    # extend default UserAdmin fieldsets to show date_of_birth and profile_photo
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {"fields": ("date_of_birth", "profile_photo")}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {"fields": ("date_of_birth", "profile_photo")}),
+    )
 
-admin.site.register(Book, BookAdmin)
+admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Book)
