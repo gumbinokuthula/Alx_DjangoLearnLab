@@ -1,4 +1,4 @@
-# bookshelf/urls.py
+# LibraryProject/bookshelf/urls.py
 from django.urls import path
 from . import views
 
