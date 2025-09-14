@@ -136,19 +136,26 @@ AUTH_USER_MODEL = "bookshelf.CustomUser"
 DEBUG = False   # In production, keep this False
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-# Security settings (important for production)
-# Enable browser XSS filter
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Secure Cookies
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Secure Headers
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
-# Prevent the site being framed (clickjacking)
-X_FRAME_OPTIONS = 'DENY'
-
-# Prevent MIME type sniffing
-SECURE_CONTENT_TYPE_NOSNIFF = True
-
-# Ensure cookies are only sent over HTTPS (set True for production with HTTPS)
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-
-# Note: For local development without HTTPS you can temporarily set the two cookie settings to False,
-# but the checker only verifies that these names appear in settings.py.
+# Deployment Notes
+To enable HTTPS in production:
+- Obtain an SSL/TLS certificate (e.g., via Let’s Encrypt).
+- Configure the web server (Nginx/Apache) to use SSL certificates.
+- Ensure Django’s SECURE_SSL_REDIRECT is set to True so HTTP requests are redirected to HTTPS.
+- Enable HSTS for strict HTTPS enforcement.
