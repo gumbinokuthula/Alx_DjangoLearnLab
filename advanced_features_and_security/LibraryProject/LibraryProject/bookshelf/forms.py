@@ -1,8 +1,12 @@
-# bookshelf/forms.py
+# LibraryProject/bookshelf/forms.py
 from django import forms
 from .models import Book
 
-class BookForm(forms.ModelForm):
+class ExampleForm(forms.ModelForm):
+    """
+    ExampleForm (ModelForm) used by the form_example view.
+    Uses Book model fields title and author.
+    """
     class Meta:
         model = Book
-        fields = ['title', 'author']  # adjust based on your Book model
+        fields = ['title', 'author']
