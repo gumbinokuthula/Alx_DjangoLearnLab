@@ -7,7 +7,6 @@
 
 <body>
     <h1>Books</h1>
-
     <ul>
         {% for book in books %}
         <li>{{ book.title }} by {{ book.author }}</li>
@@ -15,7 +14,7 @@
         <li>No books available.</li>
         {% endfor %}
     </ul>
-
+    <p><a href="{% url 'form_example' %}">Add a new book</a></p>
 </body>
 
 </html>
