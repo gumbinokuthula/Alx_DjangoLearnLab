@@ -3,5 +3,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("api.urls")),  # ✅ include new views
+    path("api/", include("api.urls")),  # ✅ ensure api urls are included
 ]
