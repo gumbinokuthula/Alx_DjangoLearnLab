@@ -1,51 +1,50 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout
-from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.decorators import login_required
+# blog/views.py
 from django.urls import reverse_lazy
-from .forms import CustomUserCreationForm, UserProfileForm
-from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Post
+from .forms import PostForm
 
-# Registration - custom view
-def register_view(request):
-    if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Optionally, log the user in immediately after registration:
-            login(request, user)
-            messages.success(request, "Registration successful. You are now logged in.")
-            return redirect("home")  # change to your homepage url name
-        else:
-            messages.error(request, "Please fix the errors below.")
-    else:
-        form = CustomUserCreationForm()
-    return render(request, "blog/register.html", {"form": form})
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'   # blog/templates/blog/post_list.html
+    context_object_name = 'posts'
+    ordering = ['-published_date']
+    paginate_by = 10  # optional pagination
 
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
 
-# Login using Django's generic LoginView (we can subclass only to set template)
-class CustomLoginView(LoginView):
-    template_name = "blog/login.html"
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+    # redirect to detail page after create (default by get_absolute_url if implemented)
+    login_url = 'login'
 
+    def form_valid(self, form):
+        # automatically set the author to the logged-in user
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-# Logout using Django's LogoutView (set redirect)
-class CustomLogoutView(LogoutView):
-    next_page = reverse_lazy("home")
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_form.html'
+    login_url = 'login'
 
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author  # only author can edit
 
-# Profile view - view & edit the logged-in user's profile
-@login_required
-def profile_view(request):
-    user = request.user
-    if request.method == "POST":
-        form = UserProfileForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Profile updated.")
-            return redirect("profile")
-        else:
-            messages.error(request, "Please fix the errors below.")
-    else:
-        form = UserProfileForm(instance=user)
-    return render(request, "blog/profile.html", {"form": form})
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'blog/post_confirm_delete.html'
+    success_url = reverse_lazy('post-list')
+    login_url = 'login'
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author  # only author can delete
