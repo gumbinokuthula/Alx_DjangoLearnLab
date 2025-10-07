@@ -132,3 +132,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Redirect after login / logout
+LOGIN_REDIRECT_URL = "home"   # or 'profile' or wherever
+LOGOUT_REDIRECT_URL = "home"
+
+# Make sure messages framework is enabled (default in Django)
+# Make sure templates have request/context processors (default)
