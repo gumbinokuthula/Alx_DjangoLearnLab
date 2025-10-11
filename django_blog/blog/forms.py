@@ -4,16 +4,17 @@ from django.contrib.auth.models import User
 from django import forms
 from .models import Post
 from .models import Comment
+from taggit.forms import TagWidget
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']  # author & published_date handled automatically
+        fields = ['title', 'content', 'tags']  # <--- include "tags"
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Post title'}),
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 8, 'placeholder': 'Write your post here...'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 8}),
+            'tags': TagWidget(),  # <--- ensures "TagWidget()" string exists
         }
-
 
 class CustomUserCreationForm(UserCreationForm):
     """
