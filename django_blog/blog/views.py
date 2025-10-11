@@ -49,6 +49,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.request.user == self.get_object().author
+
 # List posts filtered by tag
 class TaggedPostListView(ListView):
     model = Post
@@ -83,3 +84,13 @@ class PostSearchListView(ListView):
                 Q(tags__name__icontains=query)
             ).distinct()
         return Post.objects.none()
+
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get('tag_slug')
+        return Post.objects.filter(tags__slug=tag_slug)

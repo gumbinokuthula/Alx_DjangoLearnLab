@@ -28,8 +28,8 @@ urlpatterns = [
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 
      # Tagging and Search
-    path('tags/<slug:tag_name>/', TaggedPostListView.as_view(), name='posts-by-tag'),
-    path('search/', PostSearchListView.as_view(), name='post-search'),  # <--- ensures "search/" string exists
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts-by-tag'),
+    path('search/', PostSearchListView.as_view(), name='post-search'),
 ]
 
 
